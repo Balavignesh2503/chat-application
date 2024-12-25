@@ -1,8 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function Signup() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [pass, setPass] = useState("");
+  const [confPass, setConfPass] = useState("");
+  const [pic, setPic] = useState(null);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfPassword, setShowConfPassword] = useState(false);
+
+  const senddata = ()=>{
+    axios.post("http://localhost:5000/api/user",{name,email,pass,pic})                                                
+    .then(()=>{
+      alert("User created");
+    })
+    .catch(()=>{
+      alert("user not created");
+    })
+  }
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPic(URL.createObjectURL(file)); // Preview image
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -50,11 +77,13 @@ export default function Signup() {
                   type="text"
                   required
                   autoComplete="name"
+                  onChange={(e) => setName(e.target.value)}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
                   whileFocus={{ scale: 1.05 }}
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.2 }}
                 />
+                <p>{name}</p>
               </div>
             </div>
 
@@ -73,16 +102,18 @@ export default function Signup() {
                   type="email"
                   required
                   autoComplete="email"
+                  onChange={(e) => setEmail(e.target.value)}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
                   whileFocus={{ scale: 1.05 }}
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.2 }}
                 />
+                <p>{email}</p>
               </div>
             </div>
 
             {/* Password Input */}
-            <div>
+            <div className="relative">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-900"
@@ -93,19 +124,28 @@ export default function Signup() {
                 <motion.input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   autoComplete="new-password"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
+                  onChange={(e) => setPass(e.target.value)}
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm pr-10"
                   whileFocus={{ scale: 1.05 }}
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.2 }}
                 />
+                <p>{pass}</p>
+                <button
+                  type="button"
+                  className="absolute inset-y-8 right-3 text-gray-600 hover:text-gray-800"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
               </div>
             </div>
 
             {/* Confirm Password Input */}
-            <div>
+            <div className="relative">
               <label
                 htmlFor="confirm-password"
                 className="block text-sm font-medium text-gray-900"
@@ -116,14 +156,64 @@ export default function Signup() {
                 <motion.input
                   id="confirm-password"
                   name="confirm-password"
-                  type="password"
+                  type={showConfPassword ? "text" : "password"}
                   required
                   autoComplete="new-password"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
+                  onChange={(e) => setConfPass(e.target.value)}
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm pr-10"
                   whileFocus={{ scale: 1.05 }}
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.2 }}
                 />
+                <button
+                  type="button"
+                  className="absolute inset-y-8 right-3 text-gray-600 hover:text-gray-800"
+                  onClick={() => setShowConfPassword(!showConfPassword)}
+                >
+                  {showConfPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            {/* Profile Picture Input */}
+            <div>
+              <label
+                htmlFor="profile-picture"
+                className="block text-sm font-medium text-gray-900"
+              >
+                Profile Picture
+              </label>
+              <div className="mt-2 relative">
+                <motion.div
+                  className="rounded-md bg-gray-500 text-white px-4 py-2 text-sm font-semibold shadow-md cursor-pointer hover:bg-gray-400 focus:outline focus:outline-2 focus:outline-indigo-600"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <label
+                    htmlFor="profile-picture"
+                    className="cursor-pointer w-full text-center"
+                  >
+                    Choose File
+                  </label>
+                  <input
+                    id="profile-picture"
+                    name="profile-picture"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="absolute top-0 left-0 opacity-0 w-full h-full cursor-pointer"
+                  />
+                </motion.div>
+                {pic && (
+                  <div className="mt-4">
+                    <img
+                      src={pic}
+                      
+                      alt="Profile Preview"
+                      className="w-20 h-20 rounded-full object-cover mx-auto"
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -135,8 +225,14 @@ export default function Signup() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.2 }}
+                onClick={senddata}
               >
-                Sign up
+                <Link
+              to="/signin"
+              className="font-semibold text-indigo-600 hover:text-indigo-500"
+            >
+              Sign up
+            </Link>
               </motion.button>
             </div>
           </form>

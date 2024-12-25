@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 export default function Signin() {
+  const [email,setEmail] = useState("");
+  const [pass,setPass] = useState("");
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -50,6 +52,7 @@ export default function Signin() {
                   type="email"
                   required
                   autoComplete="email"
+                  onChange={(e=>{setEmail(e.target.value)})}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
                   whileFocus={{ scale: 1.05 }}
                   whileHover={{ scale: 1.02 }}
