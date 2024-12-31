@@ -14,7 +14,7 @@ export default function Signup() {
   const [showConfPassword, setShowConfPassword] = useState(false);
 
   const senddata = ()=>{
-    axios.post("http://localhost:5000/api/user",{name,email,pass,pic})                                                
+    axios.post("http://localhost:5000/signup",{name,email,pass})                                                
     .then(()=>{
       alert("User created");
     })
@@ -227,12 +227,7 @@ export default function Signup() {
                 transition={{ duration: 0.2 }}
                 onClick={senddata}
               >
-                <Link
-              to="/signin"
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
-            >
-              Sign up
-            </Link>
+                Sign up
               </motion.button>
             </div>
           </form>
